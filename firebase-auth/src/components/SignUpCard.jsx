@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card } from "./Card";
 import { CustomInput } from "./CustomInput";
-import { useAuth } from "../context/AuthProvider";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 
 export const SignUpCard = () => {
