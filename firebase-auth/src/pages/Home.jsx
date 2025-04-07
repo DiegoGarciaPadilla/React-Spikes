@@ -1,7 +1,9 @@
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 export const Home = () => {
     const { signOut, currentUser, loading } = useAuth();
+    const navigate = useNavigate();
 
     const handleSignOut = () => {
         signOut()
@@ -13,8 +15,16 @@ export const Home = () => {
             });
     };
 
+    const goToLogin = () => {
+        navigate("/login");
+    };
+
     const handleClick = () => {
-        handleSignOut();
+        if (currentUser) {
+            handleSignOut();
+        } else {
+            goToLogin();
+        }
     };
 
     if (loading) {
@@ -32,14 +42,12 @@ export const Home = () => {
                     ? "Welcome to the Home Page, " + currentUser.email
                     : "Please Log In"}
             </h1>
-            {currentUser && (
-                <button
-                    onClick={handleClick}
-                    className="w-60 bg-blue-600 mt-6 py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
-                >
-                    Cerrar sesión
-                </button>
-            )}
+            <button
+                onClick={handleClick}
+                className="w-60 bg-blue-600 mt-6 py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
+            >
+                {currentUser ? "Cerrar sesión" : "Regresar a Login"}
+            </button>
         </main>
     );
 };
