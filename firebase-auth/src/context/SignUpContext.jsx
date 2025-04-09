@@ -19,7 +19,6 @@ const SignUpProvider = ({ children }) => {
 
     useEffect(() => {
         localStorage.setItem("signUpStage", stage);
-        console.log("Stage changed to:", stage);
     }
     , [stage]);
 
@@ -33,16 +32,15 @@ const SignUpProvider = ({ children }) => {
             name: "firebase-auth",
             issuer: "DiegoGarciaPadilla",
         });
-        return {bae32: secret.base32, otpauth_url: secret.otpauth_url};
+        return {base32: secret.base32, otpauth_url: secret.otpauth_url};
     }
 
     const verifyToken = (token, secret) => {
+        console.log("Verifying token:", token, "with secret:", secret);
         const verified = speakeasy.totp.verify({
             secret: secret,
-            encoding: "base32",
             token: token,
         });
-        console.log("Token verified:", verified);
         return verified;
     }
 

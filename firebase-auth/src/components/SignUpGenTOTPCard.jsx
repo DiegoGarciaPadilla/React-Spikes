@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Card } from "./Card";
-import { CustomInput } from "./CustomInput";
 import { useAuth } from "../context/AuthContext";
 import { useSignUp } from "../context/SignUpContext";
 import QRCode from "qrcode";
