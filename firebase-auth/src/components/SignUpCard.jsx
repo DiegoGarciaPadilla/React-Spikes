@@ -4,7 +4,7 @@ import { CustomInput } from "./CustomInput";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 
-export const SignUpCard = () => {
+export const SignUpCard = ({ setStage }) => {
     const [user, setUser] = useState({
         email: "",
         password: "",
@@ -29,7 +29,7 @@ export const SignUpCard = () => {
         signUp(user.email, user.password)
             .then(() => {
                 alert("Usuario registrado con éxito");
-                navigate("/login");
+                setStage(1);
             })
             .catch((error) => {
                 console.error("Error al registrar el usuario: ", error);
