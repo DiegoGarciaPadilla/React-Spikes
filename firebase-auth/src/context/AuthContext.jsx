@@ -20,6 +20,16 @@ const useAuth = () => {
 const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [totpSecret, setTotpSecret] = useState(() => {
+        try {
+            const storedTotp = localStorage.getItem("totp");
+            return storedTotp ? JSON.parse(storedTotp) : null;
+        }
+        catch (error) {
+            console.error("Error parsing TOTP secret from localStorage:", error);
+            return null;
+        }
+    });
 
     const signUp = (email, password) =>
         createUserWithEmailAndPassword(auth, email, password);
@@ -33,9 +43,16 @@ const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             setLoading(false);
+            console.log("User state changed:", user);
         });
+
         return () => unsubscribe();
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem("totp", JSON.stringify(totpSecret));
+    }
+    , [totpSecret]);
 
     return (
         <AuthContext.Provider
@@ -45,6 +62,8 @@ const AuthProvider = ({ children }) => {
                 signOut: userSignOut,
                 currentUser,
                 loading,
+                totpSecret,
+                setTotpSecret,
             }}
         >
             {children}
