@@ -6,8 +6,8 @@ import QRCode from "qrcode";
 
 export const SignUpGenTOTPCard = () => {
     const [qrCode, setQrCode] = useState(null);
-    const { totpSecret, setTotpSecret } = useAuth();
-    const { setStage, generateSecret } = useSignUp();
+    const { totpSecret, setTotpSecret, generateSecret } = useAuth();
+    const { setStage } = useSignUp();
 
     useEffect(() => {
         if (totpSecret) {

@@ -10,8 +10,8 @@ export const SignUpValTOTPCard = () => {
     const [currentCode, setCurrentCode] = useState("");
     const [error, setError] = useState(null);
 
-    const { totpSecret } = useAuth();
-    const { setStage, verifyToken } = useSignUp();
+    const { totpSecret, verifyToken } = useAuth();
+    const { setStage } = useSignUp();
     
     const navigate = useNavigate();
 

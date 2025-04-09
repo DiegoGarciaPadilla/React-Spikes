@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import speakeasy from "speakeasy";
 
 const SignUpContext = createContext();
 
@@ -22,31 +21,9 @@ const SignUpProvider = ({ children }) => {
     }
     , [stage]);
 
-    // ESTO ES UN EJEMPLO DE CÓMO GENERAR UN SECRET PARA TOTP
-    // COMO ES UN SPIKE LO HAGO DESDE EL FRONTEND
-    // PERO EN UN PROYECTO REAL HAY QUE HACERLO DESDE EL BACKEND
-    
-    const generateSecret = () => {
-        const secret = speakeasy.generateSecret({
-            length: 20,
-            name: "firebase-auth",
-            issuer: "DiegoGarciaPadilla",
-        });
-        return {base32: secret.base32, otpauth_url: secret.otpauth_url};
-    }
-
-    const verifyToken = (token, secret) => {
-        console.log("Verifying token:", token, "with secret:", secret);
-        const verified = speakeasy.totp.verify({
-            secret: secret,
-            token: token,
-        });
-        return verified;
-    }
-
 
     return (
-        <SignUpContext.Provider value={{ stage, setStage, generateSecret, verifyToken}}>
+        <SignUpContext.Provider value={{ stage, setStage }}>
             {children}
         </SignUpContext.Provider>
     );

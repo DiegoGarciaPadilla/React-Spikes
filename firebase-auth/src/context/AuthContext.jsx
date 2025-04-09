@@ -6,6 +6,7 @@ import {
     signOut,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
+import speakeasy from "speakeasy";
 
 const AuthContext = createContext();
 
@@ -53,6 +54,29 @@ const AuthProvider = ({ children }) => {
     }
     , [totpSecret]);
 
+    // ESTO ES UN EJEMPLO DE CÓMO GENERAR UN SECRET PARA TOTP
+    // COMO ES UN SPIKE LO HAGO DESDE EL FRONTEND
+    // PERO EN UN PROYECTO REAL HAY QUE HACERLO DESDE EL BACKEND
+    
+    const generateSecret = () => {
+        const secret = speakeasy.generateSecret({
+            length: 20,
+            name: "firebase-auth",
+            issuer: "DiegoGarciaPadilla",
+        });
+        return {base32: secret.base32, otpauth_url: secret.otpauth_url};
+    }
+
+    const verifyToken = (token, secret) => {
+        console.log("Verifying token:", token, "with secret:", secret);
+        const verified = speakeasy.totp.verify({
+            secret: secret,
+            token: token,
+            window: 2
+        });
+        return verified;
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -63,6 +87,8 @@ const AuthProvider = ({ children }) => {
                 loading,
                 totpSecret,
                 setTotpSecret,
+                generateSecret,
+                verifyToken,
             }}
         >
             {children}
