@@ -7,6 +7,8 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import speakeasy from "speakeasy";
+import { decode } from 'hi-base32';
+import { Buffer } from "buffer";
 
 const AuthContext = createContext();
 
@@ -75,12 +77,13 @@ const AuthProvider = ({ children }) => {
 
     const verifyToken = (token, secret) => {
         console.log("Verifying token:", token, "with secret:", secret);
-        console.log("Date now:", new Date());
-        console.log("Date now + 60 seconds:", new Date(Date.now() + 60000));
-        console.log("Date now - 60 seconds:", new Date(Date.now() - 60000));
+
+        const decodedSecret = decode(secret);
+
         const verified = speakeasy.totp.verify({
-            secret: secret,
+            secret: Buffer.from(decodedSecret),
             token: token,
+            encoding: "base32",
             window: 2
         });
         return verified;

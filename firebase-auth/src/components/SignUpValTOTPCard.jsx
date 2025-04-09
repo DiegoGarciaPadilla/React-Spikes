@@ -34,6 +34,10 @@ export const SignUpValTOTPCard = () => {
         }
     };
 
+    const handleBack = () => {
+        setStage(1);
+    }
+
     return (
         <Card>
             <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
@@ -51,6 +55,12 @@ export const SignUpValTOTPCard = () => {
                 id="totp"
                 onChange={handleChange}
             />
+            <span
+                className="text-center cursor-pointer hover:text-gray-300"
+                onClick={handleBack}
+            >
+                Regresar
+            </span>
             <button
                 onClick={handleClick}
                 className="w-full bg-blue-600 mt-6 py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
