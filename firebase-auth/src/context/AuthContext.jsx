@@ -44,6 +44,11 @@ const AuthProvider = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
             setLoading(false);
+            if (user) {
+                console.log("User signed in:", user);
+            } else {
+                console.log("No user signed in");
+            }
         });
 
         return () => unsubscribe();
@@ -64,11 +69,15 @@ const AuthProvider = ({ children }) => {
             name: "firebase-auth",
             issuer: "DiegoGarciaPadilla",
         });
+        console.log("Generated TOTP secret:", secret);
         return {base32: secret.base32, otpauth_url: secret.otpauth_url};
     }
 
     const verifyToken = (token, secret) => {
         console.log("Verifying token:", token, "with secret:", secret);
+        console.log("Date now:", new Date());
+        console.log("Date now + 60 seconds:", new Date(Date.now() + 60000));
+        console.log("Date now - 60 seconds:", new Date(Date.now() - 60000));
         const verified = speakeasy.totp.verify({
             secret: secret,
             token: token,
