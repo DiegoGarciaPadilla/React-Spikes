@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "./Card";
-import { useAuth } from "../context/AuthContext";
-import { useSignUp } from "../context/SignUpContext";
+import { useAuth } from "../hooks/useAuth";
+import { useSignUp } from "../hooks/useSignUp";
 import QRCode from "qrcode";
 
 export const SignUpGenTOTPCard = () => {

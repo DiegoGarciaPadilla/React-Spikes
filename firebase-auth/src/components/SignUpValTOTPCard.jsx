@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Card } from "./Card";
 import { CustomInput } from "./CustomInput";
-import { useAuth } from "../context/AuthContext";
-import { useSignUp } from "../context/SignUpContext";
+import { useAuth } from "../hooks/useAuth";
+import { useSignUp } from "../hooks/useSignUp";
 import { ResetApp } from "./ResetApp";
 import { useNavigate } from "react-router";
 

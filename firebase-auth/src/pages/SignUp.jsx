@@ -1,4 +1,4 @@
-import { useSignUp } from "../context/SignUpContext";
+import { useSignUp } from "../hooks/useSignUp";
 import { SignUpCard } from "../components/SignUpCard";
 import { SignUpGenTOTPCard } from "../components/SignUpGenTOTPCard";
 import { SignUpValTOTPCard } from "../components/SignUpValTOTPCard";

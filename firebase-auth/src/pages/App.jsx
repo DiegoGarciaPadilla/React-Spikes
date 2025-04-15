@@ -11,7 +11,7 @@ export const App = () => {
         <AuthProvider>
             <Routes>
                 <Route
-                    path="/"
+                    index
                     element={
                         <PrivateRoute>
                             <Home />

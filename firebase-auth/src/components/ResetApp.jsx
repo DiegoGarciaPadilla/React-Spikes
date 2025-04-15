@@ -1,5 +1,5 @@
-import { useAuth } from "../context/AuthContext";
-import { useSignUp } from "../context/SignUpContext";
+import { useAuth } from "../hooks/useAuth";
+import { useSignUp } from "../hooks/useSignUp";
 
 export const ResetApp = () => {
 

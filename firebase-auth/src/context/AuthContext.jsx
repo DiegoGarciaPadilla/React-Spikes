@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -11,14 +11,6 @@ import { decode } from 'hi-base32';
 import { Buffer } from "buffer";
 
 const AuthContext = createContext();
-
-const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-};
 
 const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
@@ -108,4 +100,4 @@ const AuthProvider = ({ children }) => {
     );
 };
 
-export { AuthContext, useAuth, AuthProvider };
+export { AuthContext, AuthProvider };
