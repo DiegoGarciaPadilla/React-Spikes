@@ -12,7 +12,7 @@ export const LoginCard = () => {
 
     const [error, setError] = useState(null);
 
-    const { signIn } = useAuth();
+    const { signIn, signInWithGoogle } = useAuth();
     const navigate = useNavigate();
 
     const handleChange = ({ target: { name, value } }) => {
@@ -32,8 +32,20 @@ export const LoginCard = () => {
             });
     };
 
-    const handleClick = () => {
+    const handleClickSignUp = () => {
         navigate("/signup");
+    };
+
+    const handleGoogleLogin = async () => {
+        await signInWithGoogle()
+            .then(() => {
+                alert("Ha iniciado sesión con éxito");
+                navigate("/");
+            })
+            .catch((error) => {
+                console.error("Error al iniciar sesión con Google: ", error);
+                setError(error.message);
+            });
     };
 
     return (
@@ -66,17 +78,31 @@ export const LoginCard = () => {
                     />
                     <span
                         className="text-center cursor-pointer hover:text-gray-300"
-                        onClick={handleClick}
+                        onClick={handleClickSignUp}
                     >
                         ¿Aún no tienes una cuenta?
                     </span>
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 mt-6 py-2 rounded-md hover:bg-blue-700 transition duration-200"
+                        className="w-full bg-blue-600 mt-6 py-2 rounded-md hover:bg-blue-700 transition duration-200 cursor-pointer"
                     >
                         Iniciar sesión
                     </button>
                 </form>
+                <button
+                    onClick={handleGoogleLogin}
+                    type="button"
+                    className="w-full bg-white py-2 rounded-md hover:bg-gray-100 transition duration-200 text-black flex items-center justify-center cursor-pointer"
+                >
+                    <img
+                        src="https://rotulosmatesanz.com/wp-content/uploads/2017/09/2000px-Google_G_Logo.svg_.png"
+                        alt="Google Logo"
+                        className="inline-block mr-4"
+                        width={22}
+                        height={22}
+                    />
+                    Iniciar sesión con Google
+                </button>
             </div>
         </Card>
     );

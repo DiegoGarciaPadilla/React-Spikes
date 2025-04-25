@@ -38,7 +38,7 @@ export const SignUpGenTOTPCard = () => {
 
     const handleClick = () => {
         setStage(2);
-    }
+    };
 
     return (
         <Card>
