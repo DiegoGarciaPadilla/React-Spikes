@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "./Card";
 import { CustomInput } from "./CustomInput";
 import { useAuth } from "../hooks/useAuth";
+import { useSignUp } from "../hooks/useSignUp";
 import { useNavigate } from "react-router";
 
 export const SignUpStep1 = () => {
@@ -13,6 +14,7 @@ export const SignUpStep1 = () => {
     const [error, setError] = useState(null);
 
     const { signUp } = useAuth();
+    const { setStage } = useSignUp();   
     const navigate = useNavigate();
 
     const handleChange = ({ target: { name, value } }) => {
@@ -29,7 +31,7 @@ export const SignUpStep1 = () => {
         signUp(user.email, user.password)
             .then(() => {
                 alert("Usuario registrado con éxito");
-                setStage(1);
+                setStage(2);
             })
             .catch((error) => {
                 console.error("Error al registrar el usuario: ", error);

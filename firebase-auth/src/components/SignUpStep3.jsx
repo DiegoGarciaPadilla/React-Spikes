@@ -27,7 +27,7 @@ export const SignUpStep3 = () => {
         const verify = verifyToken(currentCode, totpSecret.base32)
         if (verify) {
             alert("Código verificado con éxito. Bienvenido!");
-            setStage(0);
+            setStage(1);
             navigate("/login");
         } else {
             setError("Código incorrecto");
@@ -35,7 +35,7 @@ export const SignUpStep3 = () => {
     };
 
     const handleBack = () => {
-        setStage(1);
+        setStage(2);
     }
 
     return (

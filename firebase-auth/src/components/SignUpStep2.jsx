@@ -37,7 +37,7 @@ export const SignUpStep2 = () => {
     }, []);
 
     const handleClick = () => {
-        setStage(2);
+        setStage(3);
     };
 
     return (
