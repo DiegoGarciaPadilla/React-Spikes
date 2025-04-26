@@ -6,7 +6,7 @@ import { useSignUp } from "../hooks/useSignUp";
 import { ResetApp } from "./ResetApp";
 import { useNavigate } from "react-router";
 
-export const SignUpValTOTPCard = () => {
+export const SignUpStep3 = () => {
     const [currentCode, setCurrentCode] = useState("");
     const [error, setError] = useState(null);
 

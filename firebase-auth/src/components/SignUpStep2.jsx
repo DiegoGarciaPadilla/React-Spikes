@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useSignUp } from "../hooks/useSignUp";
 import QRCode from "qrcode";
 
-export const SignUpGenTOTPCard = () => {
+export const SignUpStep2 = () => {
     const [qrCode, setQrCode] = useState(null);
     const { totpSecret, setTotpSecret, generateSecret } = useAuth();
     const { setStage } = useSignUp();

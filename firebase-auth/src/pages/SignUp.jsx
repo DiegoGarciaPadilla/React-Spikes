@@ -1,17 +1,17 @@
 import { useSignUp } from "../hooks/useSignUp";
-import { SignUpCard } from "../components/SignUpCard";
-import { SignUpGenTOTPCard } from "../components/SignUpGenTOTPCard";
-import { SignUpValTOTPCard } from "../components/SignUpValTOTPCard";
+import { SignUpStep1 } from "../components/SignUpStep1";
+import { SignUpStep2 } from "../components/SignUpStep2";
+import { SignUpStep3 } from "../components/SignUpStep3";
 
 export const SignUp = () => {
 
-    const { stage, setStage } = useSignUp();
+    const { stage } = useSignUp();
 
     return (
         <main className="flex flex-col items-center justify-center min-h-screen p-4">
-            {stage == 0 && <SignUpCard setStage={setStage} />}
-            {stage == 1 && <SignUpGenTOTPCard setStage={setStage} />}
-            {stage == 2 && <SignUpValTOTPCard setStage={setStage} />}
+            {stage == 1 && <SignUpStep1 />}
+            {stage == 2 && <SignUpStep2 />}
+            {stage == 3 && <SignUpStep3 />}
         </main>
     );
 };

@@ -1,18 +1,9 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 
 const SignUpContext = createContext();
 
 const SignUpProvider = ({ children }) => {
-    const [stage, setStage] = useState(() => {
-        const storedStage = localStorage.getItem("signUpStage");
-        return storedStage ? parseInt(storedStage, 10) : 0;
-    });
-
-    useEffect(() => {
-        localStorage.setItem("signUpStage", stage);
-    }
-    , [stage]);
-
+    const [stage, setStage] = useState(1);
 
     return (
         <SignUpContext.Provider value={{ stage, setStage }}>

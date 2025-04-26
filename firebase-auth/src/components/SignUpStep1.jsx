@@ -4,7 +4,7 @@ import { CustomInput } from "./CustomInput";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router";
 
-export const SignUpCard = ({ setStage }) => {
+export const SignUpStep1 = () => {
     const [user, setUser] = useState({
         email: "",
         password: "",

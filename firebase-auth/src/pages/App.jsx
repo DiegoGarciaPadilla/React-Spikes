@@ -18,9 +18,9 @@ export const App = () => {
                         </PrivateRoute>
                     }
                 />
-                <Route path="/login" element={<Login />} />
+                <Route path="login" element={<Login />} />
                 <Route
-                    path="/signup"
+                    path="signup"
                     element={
                         <SignUpProvider>
                             <SignUp />
