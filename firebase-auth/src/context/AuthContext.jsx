@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -15,6 +15,7 @@ import { Buffer } from "buffer";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+    const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [totpSecret, setTotpSecret] = useState(() => {
@@ -92,6 +93,8 @@ const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
+                error,
+                setError,
                 signUp,
                 signIn,
                 signOut: userSignOut,

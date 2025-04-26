@@ -6,34 +6,34 @@ import QRCode from "qrcode";
 
 export const SignUpStep2 = () => {
     const [qrCode, setQrCode] = useState(null);
-    const { totpSecret, setTotpSecret, generateSecret } = useAuth();
+    const { error, setError, totpSecret, setTotpSecret, generateSecret } =
+        useAuth();
     const { setStage } = useSignUp();
 
     useEffect(() => {
-        if (totpSecret) {
-            QRCode.toDataURL(totpSecret.otpauth_url, {
-                errorCorrectionLevel: "H",
-            })
-                .then((url) => {
+        const generateQRCode = async () => {
+            setError(null);
+            try {
+                if (totpSecret) {
+                    const url = await QRCode.toDataURL(totpSecret.otpauth_url, {
+                        errorCorrectionLevel: "H",
+                    });
                     setQrCode(url);
-                    console.log("TOTP Secret:", totpSecret);
-                })
-                .catch((err) => {
-                    console.error("Error generating QR code: ", err);
-                });
-        } else {
-            console.log("No TOTP secret found, generating a new one...");
-            const secret = generateSecret();
-            setTotpSecret(secret);
-            QRCode.toDataURL(secret.otpauth_url, { errorCorrectionLevel: "H" })
-                .then((url) => {
+                } else {
+                    const secret = generateSecret();
+                    setTotpSecret(secret);
+                    const url = await QRCode.toDataURL(secret.otpauth_url, {
+                        errorCorrectionLevel: "H",
+                    });
                     setQrCode(url);
-                    console.log("TOTP Secret:", secret);
-                })
-                .catch((err) => {
-                    console.error("Error generating QR code: ", err);
-                });
-        }
+                }
+            } catch (error) {
+                console.error("Error generating QR code: ", error);
+                setError("Error generating QR code: " + error.message);
+            }
+        };
+
+        generateQRCode();
     }, []);
 
     const handleClick = () => {
@@ -42,6 +42,11 @@ export const SignUpStep2 = () => {
 
     return (
         <Card>
+            {error && (
+                <div className="bg-red-500 text-white p-4 rounded-md mb-4">
+                    {error}
+                </div>
+            )}
             <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
                 Usa TOTP para proteger tu cuenta
             </h1>

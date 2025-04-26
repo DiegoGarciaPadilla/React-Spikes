@@ -3,20 +3,20 @@ import { useSignUp } from "../hooks/useSignUp";
 
 export const ResetApp = () => {
 
-    const { signOut, setTotpSecret } = useAuth();
+    const { setError, signOut, setTotpSecret } = useAuth();
     const { setStage } = useSignUp();
 
-    const handleClick = () => {
-        signOut()
-            .then(() => {
-                console.log("User signed out");
-                setTotpSecret(null);
-                localStorage.removeItem("totp");
-            })
-            .catch((error) => {
-                console.error("Error signing out: ", error);
-            });
-        setStage(0);
+    const handleClick = async () => {
+        setError(null);
+        try {
+            await signOut();
+            setTotpSecret(null);
+            localStorage.removeItem("totp");
+            setStage(0);
+        } catch (error) {
+            console.error("Error signing out: ", error);
+            setError("Error signing out: " + error.message);
+        }
     }
 
     return (

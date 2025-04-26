@@ -8,11 +8,10 @@ import { useNavigate } from "react-router";
 
 export const SignUpStep3 = () => {
     const [currentCode, setCurrentCode] = useState("");
-    const [error, setError] = useState(null);
 
-    const { totpSecret, verifyToken } = useAuth();
+    const { error, setError, totpSecret, verifyToken } = useAuth();
     const { setStage } = useSignUp();
-    
+
     const navigate = useNavigate();
 
     const handleChange = ({ target: { value } }) => {
@@ -20,11 +19,12 @@ export const SignUpStep3 = () => {
     };
 
     const handleClick = () => {
+        setError(null);
         if (currentCode.length !== 6) {
             alert("El código debe tener 6 dígitos");
             return;
         }
-        const verify = verifyToken(currentCode, totpSecret.base32)
+        const verify = verifyToken(currentCode, totpSecret.base32);
         if (verify) {
             alert("Código verificado con éxito. Bienvenido!");
             setStage(1);
@@ -36,18 +36,18 @@ export const SignUpStep3 = () => {
 
     const handleBack = () => {
         setStage(2);
-    }
+    };
 
     return (
         <Card>
-            <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
-                Valida tu código
-            </h1>
             {error && (
                 <div className="bg-red-500 text-white p-4 rounded-md mb-4">
                     {error}
                 </div>
             )}
+            <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
+                Valida tu código
+            </h1>
             <CustomInput
                 label="Código de 6 dígitos"
                 type="number"

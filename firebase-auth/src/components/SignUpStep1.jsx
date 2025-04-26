@@ -11,9 +11,8 @@ export const SignUpStep1 = () => {
         password: "",
         confirmPassword: "",
     });
-    const [error, setError] = useState(null);
 
-    const { signUp } = useAuth();
+    const { error, setError, signUp } = useAuth();
     const { setStage } = useSignUp();   
     const navigate = useNavigate();
 
@@ -21,22 +20,22 @@ export const SignUpStep1 = () => {
         setUser({ ...user, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
         if (user.password !== user.confirmPassword) {
             alert("Las contraseñas no coinciden");
             return;
         }
 
-        signUp(user.email, user.password)
-            .then(() => {
-                alert("Usuario registrado con éxito");
-                setStage(2);
-            })
-            .catch((error) => {
-                console.error("Error al registrar el usuario: ", error);
-                setError(error.message);
-            });
+        try {
+            await signUp(user.email, user.password);
+            alert("Usuario registrado con éxito");
+            setStage(2);
+        } catch (error) {
+            console.error("Error al registrar el usuario: ", error);
+            setError(error.message);
+        }
     };
 
     const handleClick = () => {
@@ -45,14 +44,14 @@ export const SignUpStep1 = () => {
 
     return (
         <Card>
-            <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
-                Regístrate
-            </h1>
             {error && (
                 <div className="bg-red-500 text-white p-4 rounded-md mb-4">
                     {error}
                 </div>
             )}
+            <h1 className="text-3xl md:text-4xl font-medium text-center mb-8 ">
+                Regístrate
+            </h1>
             <div className="space-y-4">
                 <form action="#" onSubmit={handleSubmit} className="space-y-4">
                     <CustomInput
