@@ -12,8 +12,8 @@ export const SignUpStep1 = () => {
         confirmPassword: "",
     });
 
-    const { error, setError, signUp } = useAuth();
-    const { setStage } = useSignUp();   
+    const { error, setError, signUp, verifyEmail } = useAuth();
+    const { setStage } = useSignUp();
     const navigate = useNavigate();
 
     const handleChange = ({ target: { name, value } }) => {
@@ -30,7 +30,8 @@ export const SignUpStep1 = () => {
 
         try {
             await signUp(user.email, user.password);
-            alert("Usuario registrado con éxito");
+            await verifyEmail();
+            alert("Usuario registrado con éxito. Revisa tu correo electrónico para verificar tu cuenta.");
             setStage(2);
         } catch (error) {
             console.error("Error al registrar el usuario: ", error);

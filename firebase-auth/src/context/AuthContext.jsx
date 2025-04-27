@@ -1,36 +1,33 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef, useCallback } from "react";
 import {
     createUserWithEmailAndPassword,
+    sendEmailVerification,
     signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut,
     GoogleAuthProvider,
     signInWithPopup,
+    PhoneAuthProvider,
+    RecaptchaVerifier,
+    multiFactor,
 } from "firebase/auth";
 import { auth } from "../firebase/firebase";
-import speakeasy from "speakeasy";
-import { decode } from 'hi-base32';
-import { Buffer } from "buffer";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+    const recaptchaVerifierRef = useRef(null);
+
     const [error, setError] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [totpSecret, setTotpSecret] = useState(() => {
-        try {
-            const storedTotp = localStorage.getItem("totp");
-            return storedTotp ? JSON.parse(storedTotp) : null;
-        }
-        catch (error) {
-            console.error("Error parsing TOTP secret from localStorage:", error);
-            return null;
-        }
-    });
+    const [verificationId, setVerificationId] = useState(null);
 
     const signUp = (email, password) =>
         createUserWithEmailAndPassword(auth, email, password);
+
+    const verifyEmail = () =>
+        sendEmailVerification(auth.currentUser);
 
     const signIn = (email, password) =>
         signInWithEmailAndPassword(auth, email, password);
@@ -41,7 +38,61 @@ const AuthProvider = ({ children }) => {
         const googleProvider = new GoogleAuthProvider();
         return signInWithPopup(auth, googleProvider);
     };
-        
+
+    const registerRecaptcha = useCallback((element) => {
+        try {
+            if (element && !recaptchaVerifierRef.current) {
+                recaptchaVerifierRef.current = new RecaptchaVerifier(
+                    auth,
+                    element.id,
+                    { size: "invisible" },
+                );
+                recaptchaVerifierRef.current.render();
+            }
+        } catch (error) {
+            console.error("Error al registrar el reCAPTCHA:", error);
+            setError(error.message);
+            throw error;
+        }
+    }, []);
+
+    const startEnrollment = async (phoneNumber) => {
+        if (!currentUser) throw new Error("No user signed in");
+        if (!recaptchaVerifierRef.current)
+            throw new Error("Recaptcha not initialized");
+
+        try {
+            const session = await multiFactor(currentUser).getSession();
+            const phoneProvider = new PhoneAuthProvider(auth);
+            const id = await phoneProvider.verifyPhoneNumber(
+                { phoneNumber, session },
+                recaptchaVerifierRef.current
+            );
+            setVerificationId(id);
+        } catch (error) {
+            console.error("Error al iniciar el enrolamiento:", error);
+            setError(error.message);
+            throw error;
+        }
+    };
+
+    const confirmCode = async (code) => {
+        try {
+            const assertion = PhoneAuthProvider.credential(
+                verificationId,
+                code
+            );
+            await multiFactor(auth.currentUser).enroll(
+                assertion,
+                "Mi teléfono"
+            );
+            return true;
+        } catch (error) {
+            console.error("Error al confirmar el código:", error);
+            setError(error.message);
+            throw error;
+        }
+    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -57,54 +108,21 @@ const AuthProvider = ({ children }) => {
         return () => unsubscribe();
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem("totp", JSON.stringify(totpSecret));
-    }
-    , [totpSecret]);
-
-    // ESTO ES UN EJEMPLO DE CÓMO GENERAR UN SECRET PARA TOTP
-    // COMO ES UN SPIKE LO HAGO DESDE EL FRONTEND
-    // PERO EN UN PROYECTO REAL HAY QUE HACERLO DESDE EL BACKEND
-    
-    const generateSecret = () => {
-        const secret = speakeasy.generateSecret({
-            length: 20,
-            name: "firebase-auth",
-            issuer: "DiegoGarciaPadilla",
-        });
-        console.log("Generated TOTP secret:", secret);
-        return {base32: secret.base32, otpauth_url: secret.otpauth_url};
-    }
-
-    const verifyToken = (token, secret) => {
-        console.log("Verifying token:", token, "with secret:", secret);
-
-        const decodedSecret = decode(secret);
-
-        const verified = speakeasy.totp.verify({
-            secret: Buffer.from(decodedSecret),
-            token: token,
-            encoding: "base32",
-            window: 2
-        });
-        return verified;
-    }
-
     return (
         <AuthContext.Provider
             value={{
                 error,
                 setError,
                 signUp,
+                verifyEmail,
                 signIn,
                 signOut: userSignOut,
                 currentUser,
                 loading,
-                totpSecret,
-                setTotpSecret,
-                generateSecret,
-                verifyToken,
                 signInWithGoogle,
+                registerRecaptcha,
+                startEnrollment,
+                confirmCode,
             }}
         >
             {children}
