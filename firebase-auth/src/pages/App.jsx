@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router";
+import { LoginProvider } from "../context/LoginContext";
 import { SignUpProvider } from "../context/SignUpContext";
 import { PrivateRoute } from "../components/PrivateRoute";
 import { Home } from "./Home";
@@ -18,22 +19,29 @@ export const App = () => {
             <Routes>
                 <Route
                     index
-                element={
-                    <PrivateRoute>
-                        <Home />
-                    </PrivateRoute>
-                }
-            />
-            <Route path="login" element={<Login />} />
-            <Route
-                path="signup"
-                element={
-                    <SignUpProvider>
-                        <SignUp />
-                    </SignUpProvider>
-                }
-            />
-        </Routes>
+                    element={
+                        <PrivateRoute>
+                            <Home />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="login"
+                    element={
+                        <LoginProvider>
+                            <Login />
+                        </LoginProvider>
+                    }
+                />
+                <Route
+                    path="signup"
+                    element={
+                        <SignUpProvider>
+                            <SignUp />
+                        </SignUpProvider>
+                    }
+                />
+            </Routes>
         </>
     );
 };

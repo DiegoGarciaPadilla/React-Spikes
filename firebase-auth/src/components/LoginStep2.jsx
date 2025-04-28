@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Card } from "./Card";
 import { CustomInput } from "./CustomInput";
 import { useAuth } from "../hooks/useAuth";
-import { useSignUp } from "../hooks/useSignUp";
+import { useLogin } from "../hooks/useLogin";
 import { useNavigate } from "react-router";
 
-export const SignUpStep3 = () => {
+export const LoginStep2 = () => {
     const [code, setCode] = useState("");
 
-    const { error, setError, signOut, enrollPhoneNumberWithCode } = useAuth();
-    const { setStage } = useSignUp();
+    const { error, setError, verifyLoginWithSmsCode } = useAuth();
+    const { setStage } = useLogin();
 
     const navigate = useNavigate();
 
@@ -25,13 +25,10 @@ export const SignUpStep3 = () => {
             return;
         }
         try {
-            const verify = await enrollPhoneNumberWithCode(code);
-            if (verify) {
-                alert("Código verificado con éxito. Bienvenido!");
-                setStage(1);
-                navigate("/login");
-                signOut();
-            }
+            await verifyLoginWithSmsCode(code);
+            alert("Código verificado con éxito. Bienvenido!");
+            setStage(1);
+            navigate("/");
         } catch (err) {
             console.error("Error en verificación:", err);
             setError(`Error al verificar el código: ${err.message}`);

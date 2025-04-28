@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Card } from "./Card";
 import { CustomInput } from "./CustomInput";
 import { useAuth } from "../hooks/useAuth";
+import { useLogin } from "../hooks/useLogin";
 import { useNavigate } from "react-router";
 
-export const LoginCard = () => {
+export const LoginStep1 = () => {
     const [user, setUser] = useState({
         email: "",
         password: "",
@@ -13,23 +14,27 @@ export const LoginCard = () => {
     const [error, setError] = useState(null);
 
     const { signIn, signInWithGoogle } = useAuth();
+    const { setStage } = useLogin();
     const navigate = useNavigate();
 
     const handleChange = ({ target: { name, value } }) => {
         setUser({ ...user, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        signIn(user.email, user.password)
-            .then(() => {
-                alert("Ha iniciado sesión con éxito");
+        setError(null);
+        try {
+            const result = await signIn(user.email, user.password);
+            if (result.mfaPending) {
+                setStage(2);
+            } else {
                 navigate("/");
-            })
-            .catch((error) => {
-                console.error("Error al iniciar sesión: ", error);
-                setError(error.message);
-            });
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            setError(error.message);
+        }
     };
 
     const handleClickSignUp = () => {
@@ -37,15 +42,12 @@ export const LoginCard = () => {
     };
 
     const handleGoogleLogin = async () => {
-        await signInWithGoogle()
-            .then(() => {
-                alert("Ha iniciado sesión con éxito");
-                navigate("/");
-            })
-            .catch((error) => {
-                console.error("Error al iniciar sesión con Google: ", error);
-                setError(error.message);
-            });
+        try {
+            await signInWithGoogle();
+            navigate("/");
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     return (
